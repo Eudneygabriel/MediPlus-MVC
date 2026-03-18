@@ -1,0 +1,22 @@
+/* Efeito de destaque nas linhas das tabelas */
+tr { 
+    transition: all 0.2s ease-in-out; 
+}
+
+tr:hover { 
+    background-color: #f0f7ff !important; /* Azul clarinho quando passas o rato */
+    transform: scale(1.005); /* Cresce ligeiramente */
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+/* Deixar o aviso da clínica mais elegante */
+.alert {
+    border-radius: 12px;
+    border: none;
+}
+
+/* Corrigir ícones colados ao texto */
+.bi {
+    margin-right: 8px;
+}
