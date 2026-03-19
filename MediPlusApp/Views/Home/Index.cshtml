@@ -22,7 +22,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-uppercase fw-bold text-muted mb-1">Pacientes</h6>
-                            <h2 class="mb-0">128</h2>
+                            <h2 class="mb-0">@ViewBag.TotalPacientes</h2>
                         </div>
                     </div>
                     <a asp-controller="Pacientes" asp-action="Index" class="btn btn-link p-0 mt-3 text-decoration-none">Ver todos →</a>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-uppercase fw-bold text-muted mb-1">Médicos</h6>
-                            <h2 class="mb-0">14</h2>
+                            <h2 class="mb-0">@ViewBag.TotalMedicos</h2>
                         </div>
                     </div>
                     <a asp-controller="Medicos" asp-action="Index" class="btn btn-link p-0 mt-3 text-decoration-none text-success">Ver corpo clínico →</a>
@@ -56,7 +56,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-uppercase fw-bold text-muted mb-1">Hoje</h6>
-                            <h2 class="mb-0">9</h2>
+                            <h2 class="mb-0">@ViewBag.ConsultasHoje</h2>
                         </div>
                     </div>
                     <a asp-controller="Marcacoes" asp-action="Index" class="btn btn-link p-0 mt-3 text-decoration-none text-warning">Ver agenda →</a>

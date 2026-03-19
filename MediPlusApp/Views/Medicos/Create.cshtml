@@ -1,0 +1,49 @@
+@model MediPlusApp.Models.Medico
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i>Registar Novo Médico</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div class="mb-3">
+                            <label asp-for="Nome" class="form-label fw-bold">Nome Profissional</label>
+                            <input asp-for="Nome" class="form-control" placeholder="Ex: Dr. João Silva" required />
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label asp-for="Cedula" class="form-label fw-bold">Nº Cédula</label>
+                                <input asp-for="Cedula" class="form-control" placeholder="CP-00000" required />
+                            </div>
+                            <div class="col">
+                                <label asp-for="EspecialidadeId" class="form-label fw-bold">Especialidade</label>
+                                <select asp-for="EspecialidadeId" class="form-select" asp-items="ViewBag.EspecialidadeId">
+                                    <option value="">-- Selecionar --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Email</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="medico@mediplus.pt" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Bio" class="form-label fw-bold">Biografia Breve</label>
+                            <textarea asp-for="Bio" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">Guardar Médico</button>
+                            <a asp-action="Index" class="btn btn-light border">Voltar à Lista</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

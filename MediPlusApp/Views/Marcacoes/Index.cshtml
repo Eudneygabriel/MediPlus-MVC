@@ -21,22 +21,57 @@
                                 <th>Paciente</th>
                                 <th>Médico</th>
                                 <th>Observações</th>
-                                <th class="text-center">Estado</th>
+                                <th class="text-center">Estado / Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @* Exemplo de como vai aparecer quando houver dados *@
-                            <tr>
-                                <td class="ps-4">
-                                    <span class="badge bg-primary px-3 py-2">18/03/2026 - 14:30</span>
-                                </td>
-                                <td class="fw-bold">A carregar...</td>
-                                <td>A carregar...</td>
-                                <td class="text-muted small">Consulta de rotina</td>
-                                <td class="text-center">
-                                    <span class="badge rounded-pill bg-success-subtle text-success border border-success">Confirmada</span>
-                                </td>
-                            </tr>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center p-4 text-muted">
+                                        Não existem marcações agendadas.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <span class="badge bg-primary px-3 py-2">
+                                                @item.DataHora.ToString("dd/MM/yyyy - HH:mm")
+                                            </span>
+                                        </td>
+                                        <td class="fw-bold">
+                                            @item.Paciente?.Nome
+                                        </td>
+                                        <td>
+                                            @item.Medico?.Nome
+                                        </td>
+                                        <td class="text-muted small">
+                                            @item.Observacoes
+                                        </td>
+                                        <td class="text-center">
+                                            @if (item.Estado == "Confirmada")
+                                            {
+                                                <form asp-action="Concluir" asp-route-id="@item.MarcacaoId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-success fw-bold shadow-sm">
+                                                        <i class="bi bi-check-circle"></i> Concluir
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3">
+                                                    <i class="bi bi-check-all"></i> Realizada
+                                                </span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>

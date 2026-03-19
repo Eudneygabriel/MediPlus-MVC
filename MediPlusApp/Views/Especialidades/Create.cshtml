@@ -1,0 +1,46 @@
+@model MediPlusApp.Models.Especialidade
+
+@{
+    ViewData["Title"] = "Nova Especialidade";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle"></i> Adicionar Especialidade</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="Nome" class="form-label fw-bold">Nome da Especialidade</label>
+                            <input asp-for="Nome" class="form-control form-control-lg" placeholder="Ex: Dermatologia, Ortopedia..." />
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 shadow-sm fw-bold">
+                                <i class="bi bi-save"></i> Gravar Especialidade
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4 border-0 shadow-sm">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Dica: Após criar a especialidade, ela ficará disponível para ser associada a novos médicos e marcações.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
