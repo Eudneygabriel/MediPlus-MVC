@@ -1,0 +1,132 @@
+@model MediPlusApp.Models.Paciente
+
+@{
+    ViewData["Title"] = "Histórico do Paciente";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow border-0 mb-4">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge"></i> Ficha do Paciente</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="display-4 text-info"><i class="bi bi-person-circle"></i></div>
+                        <h4 class="fw-bold mt-2">@Model.Nome</h4>
+                    </div>
+                    
+                    <dl class="row small">
+                        <dt class="col-sm-5 text-muted">Nº SNS:</dt>
+                        <dd class="col-sm-7 fw-bold">@Model.SNS</dd>
+
+                        <dt class="col-sm-5 text-muted">Email:</dt>
+                        <dd class="col-sm-7 text-truncate">@Model.Email</dd>
+
+                        <dt class="col-sm-5 text-muted">Telemóvel:</dt>
+                        <dd class="col-sm-7">@Model.Telemovel</dd>
+                    </dl>
+
+                    <hr />
+                    
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.PacienteId" class="btn btn-warning fw-bold">
+                            <i class="bi bi-pencil-square"></i> Editar Dados
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar à Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow border-0 p-3 bg-light">
+                <h6 class="fw-bold text-muted text-uppercase small mb-3">Resumo de Assiduidade</h6>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Consultas Realizadas:</span>
+                    <span class="badge bg-success rounded-pill">@Model.Marcacoes.Count(m => m.Estado == "Realizada")</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Faltas Registadas:</span>
+                    <span class="badge bg-danger rounded-pill">@Model.Marcacoes.Count(m => m.Estado == "Faltou")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history"></i> Histórico de Consultas</h5>
+                    <span class="badge bg-primary">@Model.Marcacoes.Count() Registos</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Data e Hora</th>
+                                    <th>Médico / Especialidade</th>
+                                    <th>Notas e Diagnósticos</th>
+                                    <th class="text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Marcacoes != null && Model.Marcacoes.Any())
+                                {
+                                    @foreach (var m in Model.Marcacoes.OrderByDescending(x => x.DataHora))
+                                    {
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="fw-bold">@m.DataHora.ToString("dd/MM/yyyy")</div>
+                                                <small class="text-info fw-bold">@m.DataHora.ToString("HH:mm")</small>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-dark">@m.Medico?.Nome</div>
+                                                <small class="text-muted">Especialista</small>
+                                            </td>
+                                            <td>
+                                                <p class="mb-0 small text-muted" style="max-width: 200px;">
+                                                    @(string.IsNullOrEmpty(m.Observacoes) ? "Sem notas registadas." : m.Observacoes)
+                                                </p>
+                                            </td>
+                                            <td class="text-center">
+                                                @if (m.Estado == "Realizada")
+                                                {
+                                                    <span class="badge bg-success-subtle text-success border border-success px-3 py-2">
+                                                        <i class="bi bi-check-lg"></i> Realizada
+                                                    </span>
+                                                }
+                                                else if (m.Estado == "Faltou")
+                                                {
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2">
+                                                        <i class="bi bi-x-lg"></i> Faltou
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning-subtle text-dark border border-warning px-3 py-2">
+                                                        <i class="bi bi-clock"></i> @m.Estado
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted fst-italic">
+                                            <i class="bi bi-folder-x display-4 d-block mb-3"></i>
+                                            Nenhuma consulta encontrada no histórico deste paciente.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

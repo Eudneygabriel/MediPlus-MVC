@@ -1,18 +1,29 @@
 using Microsoft.EntityFrameworkCore;
 using MediPlusApp.Models;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
+// A configuração de data tem de vir DEPOIS de todos os 'using' 
+// e ANTES do 'var builder'
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+// Configuração da ligação ao PostgreSQL
 builder.Services.AddDbContext<MediPlusContext>(options =>
-    options.UseInMemoryDatabase("MediPlusDB"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
+// Bloco para criar dados automaticamente ao iniciar
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<MediPlusContext>();
     
+    // Garante que a base de dados existe
+    context.Database.EnsureCreated();
+
     // 1. Criar Especialidades
     if (!context.Especialidade.Any())
     {
@@ -38,34 +49,34 @@ using (var scope = app.Services.CreateScope())
                 Cedula = "CP-77123", 
                 Email = "carolina.cardoso@mediplus.pt", 
                 EspecialidadeId = 5,
-                Bio = "Especialista em Pediatria e Medicina Geral. Foca-se no acompanhamento integral da família." 
+                Bio = "Especialista em Pediatria e Medicina Geral." 
             },
             new Medico { 
                 Nome = "Dr. Eudney Gabriel", 
                 Cedula = "CP-88234", 
                 Email = "eudney.gabriel@mediplus.pt", 
                 EspecialidadeId = 2,
-                Bio = "Especialista em Cardiologia e Psiquiatria. Dedica-se à saúde do coração e bem-estar mental."
+                Bio = "Especialista em Cardiologia e Psiquiatria."
             },
             new Medico { 
                 Nome = "Dra. Lara Lourenço", 
                 Cedula = "CP-99345", 
                 Email = "lara.lourenco@mediplus.pt", 
                 EspecialidadeId = 3,
-                Bio = "Especialista em Ginecologia e Obstetrícia. Acompanha a saúde feminina em todas as etapas."
+                Bio = "Especialista em Ginecologia e Obstetrícia."
             },
             new Medico { 
                 Nome = "Dr. Miguel Correia", 
                 Cedula = "CP-66456", 
                 Email = "miguel.correia@mediplus.pt", 
                 EspecialidadeId = 4,
-                Bio = "Especialista em Ortopedia e Dermatologia. Focado em medicina regenerativa e traumatologia."
+                Bio = "Especialista em Ortopedia e Dermatologia."
             }
         );
         context.SaveChanges();
     }
 
-    // 3. Criar Pacientes (Com Telemóvel e SNS para os avisos)
+    // 3. Criar Pacientes
     if (!context.Paciente.Any())
     {
         context.Paciente.AddRange(
@@ -95,11 +106,12 @@ app.MapControllerRoute(
 
 app.Run();
 
+// Classe de Contexto (Base de Dados)
 public class MediPlusContext : DbContext
 {
     public MediPlusContext(DbContextOptions<MediPlusContext> options) : base(options) { }
-    public DbSet<Marcacao> Marcacao { get; set; }
-    public DbSet<Medico> Medico { get; set; }
-    public DbSet<Paciente> Paciente { get; set; }
-    public DbSet<Especialidade> Especialidade { get; set; }
+    public DbSet<Marcacao> Marcacao { get; set; } = null!;
+    public DbSet<Medico> Medico { get; set; } = null!;
+    public DbSet<Paciente> Paciente { get; set; } = null!;
+    public DbSet<Especialidade> Especialidade { get; set; } = null!;
 }

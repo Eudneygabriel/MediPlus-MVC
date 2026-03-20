@@ -24,6 +24,8 @@ C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\Microsoft.VisualStudio.SolutionPersistence.dll
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\Mono.TextTemplating.dll
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\Newtonsoft.Json.dll
+C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\Npgsql.dll
+C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\System.CodeDom.dll
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\System.Composition.AttributedModel.dll
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\System.Composition.Convention.dll

@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-primary">1. O que o paciente necessita? (Especialidade)</label>
+                            <label class="form-label fw-bold text-primary">1. Especialidade Desejada</label>
                             <select id="selectEspecialidade" class="form-select border-primary" asp-items="ViewBag.EspecialidadeId">
                                 <option value="">--- Selecione a Especialidade ---</option>
                             </select>
@@ -68,12 +68,10 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        // Lógica JS para filtrar médicos sem recarregar a página
         document.getElementById("selectEspecialidade").addEventListener("change", function () {
             var espId = this.value;
             var medicoSelect = document.getElementById("selectMedico");
 
-            // Limpa a lista de médicos
             medicoSelect.innerHTML = '<option value="">A carregar...</option>';
 
             if (!espId) {
@@ -81,7 +79,6 @@
                 return;
             }
 
-            // Chama o Controller (o método que criámos antes)
             fetch('/Marcacoes/GetMedicosPorEspecialidade?especialidadeId=' + espId)
                 .then(response => response.json())
                 .then(data => {

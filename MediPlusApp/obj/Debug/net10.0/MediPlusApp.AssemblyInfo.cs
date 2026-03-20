@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediPlusApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e42ffe91027a76130c00af3a168045d65a7fbe66")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e6fde6d85de95e781bf57458df8ab4921cc9e79")]
 [assembly: System.Reflection.AssemblyProductAttribute("MediPlusApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MediPlusApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
