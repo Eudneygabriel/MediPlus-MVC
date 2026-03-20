@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MediPlusApp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using X.PagedList; 
+using X.PagedList.Extensions; 
 
 namespace MediPlusApp.Controllers
 {
@@ -14,19 +16,39 @@ namespace MediPlusApp.Controllers
             _context = context;
         }
 
-        // 1. LISTAGEM PRINCIPAL (AGENDA)
-        public async Task<IActionResult> Index()
+        // 1. LISTAGEM PRINCIPAL COM FILTROS E PAGINAÇÃO
+        public IActionResult Index(string buscaMedico, DateTime? buscaData, int? pagina)
         {
-            var marcacoes = await _context.Marcacao
+            int numeroPagina = pagina ?? 1;
+            int tamanhoPagina = 5;
+
+            var query = _context.Marcacao
                 .Include(m => m.Medico)
-                    .ThenInclude(med => med.Especialidade) // Para mostrar a especialidade na agenda
+                    .ThenInclude(med => med!.Especialidade)
                 .Include(m => m.Paciente)
-                .OrderByDescending(m => m.DataHora) 
-                .ToListAsync();
-            return View(marcacoes);
+                .AsNoTracking()
+                .AsQueryable();
+
+            // Filtros com verificação de nulidade para evitar avisos CS8602
+            if (!string.IsNullOrWhiteSpace(buscaMedico))
+            {
+                query = query.Where(m => m.Medico != null && m.Medico.Nome.Contains(buscaMedico));
+            }
+
+            if (buscaData.HasValue)
+            {
+                query = query.Where(m => m.DataHora.Date == buscaData.Value.Date);
+            }
+
+            // Conversão para lista paginada (Versão Síncrona para estabilidade)
+            var marcacoesPaginadas = query
+                .OrderByDescending(m => m.DataHora)
+                .ToPagedList(numeroPagina, tamanhoPagina);
+            
+            return View(marcacoesPaginadas);
         }
 
-        // 2. MUDAR ESTADO PARA REALIZADA (CONCLUIR)
+        // 2. MUDAR ESTADO PARA REALIZADA
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Concluir(int id)
@@ -66,7 +88,7 @@ namespace MediPlusApp.Controllers
             return View();
         }
 
-        // 5. GRAVAR AGENDAMENTO COM VALIDAÇÃO DE CONFLITO
+        // 5. GRAVAR AGENDAMENTO
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Marcacao marcacao)
@@ -76,23 +98,20 @@ namespace MediPlusApp.Controllers
 
             if (ModelState.IsValid)
             {
-                // Validação 1: Data Passada
                 if (marcacao.DataHora < DateTime.Now.AddMinutes(-5))
                 {
                     ModelState.AddModelError("DataHora", "Não pode agendar consultas no passado.");
                 }
                 else 
                 {
-                    // Validação 2: CONFLITO DE HORÁRIO (O ponto crítico!)
-                    // Verifica se o mesmo médico já tem uma marcação (Confirmada ou Realizada) na mesma hora
                     var existeConflito = await _context.Marcacao
                         .AnyAsync(m => m.MedicoId == marcacao.MedicoId 
-                                  && m.DataHora == marcacao.DataHora 
-                                  && m.Estado != "Faltou");
+                                      && m.DataHora == marcacao.DataHora 
+                                      && m.Estado != "Faltou");
 
                     if (existeConflito)
                     {
-                        ModelState.AddModelError("DataHora", "Este médico já possui uma consulta agendada para este horário exato.");
+                        ModelState.AddModelError("DataHora", "Este médico já possui uma consulta agendada para este horário.");
                     }
                     else
                     {
@@ -104,11 +123,9 @@ namespace MediPlusApp.Controllers
                 }
             }
 
-            // Se chegou aqui, algo falhou. Recarregamos as listas para a View.
             ViewBag.EspecialidadeId = new SelectList(_context.Especialidade, "EspecialidadeId", "Nome");
             ViewBag.PacienteId = new SelectList(_context.Paciente, "PacienteId", "Nome", marcacao.PacienteId);
             
-            // Recarrega os médicos da especialidade selecionada para não perder a seleção no erro
             var medicoTemp = await _context.Medico.FindAsync(marcacao.MedicoId);
             if (medicoTemp != null) {
                 ViewBag.MedicoId = new SelectList(_context.Medico.Where(m => m.EspecialidadeId == medicoTemp.EspecialidadeId), "MedicoId", "Nome", marcacao.MedicoId);
@@ -119,7 +136,6 @@ namespace MediPlusApp.Controllers
             return View(marcacao);
         }
 
-        // 6. FILTRO AJAX DE MÉDICOS
         [HttpGet]
         public JsonResult GetMedicosPorEspecialidade(int especialidadeId)
         {
@@ -127,7 +143,6 @@ namespace MediPlusApp.Controllers
                 .Where(m => m.EspecialidadeId == especialidadeId)
                 .Select(m => new { id = m.MedicoId, nome = m.Nome })
                 .ToList();
-                
             return Json(medicos);
         }
     }

@@ -126,3 +126,6 @@ C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\obj\Debug\net10.0\
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\obj\Debug\net10.0\MediPlusApp.pdb
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\obj\Debug\net10.0\MediPlusApp.genruntimeconfig.cache
 C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\obj\Debug\net10.0\ref\MediPlusApp.dll
+C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\X.PagedList.dll
+C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\bin\Debug\net10.0\X.PagedList.Mvc.Core.dll
+C:\Users\Carolina Silva\Documents\PI1\MediPlusApp\MediPlusApp\obj\Debug\net10.0\MediPlusApp.MvcApplicationPartsAssemblyInfo.cs

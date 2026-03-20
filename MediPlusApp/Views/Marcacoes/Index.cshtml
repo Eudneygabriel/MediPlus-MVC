@@ -1,4 +1,6 @@
-@model IEnumerable<MediPlusApp.Models.Marcacao>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IPagedList<MediPlusApp.Models.Marcacao>
 
 @{
     ViewData["Title"] = "Agenda de Consultas";
@@ -17,104 +19,162 @@
         </a>
     </div>
 
+    @* BARRA DE FILTROS *@
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; background-color: #fcfcfc;">
+        <div class="card-body p-3">
+            <form method="get" class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted text-uppercase mb-1">Pesquisar Médico</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-primary"></i></span>
+                        <input type="text" name="buscaMedico" class="form-control border-start-0" placeholder="Nome do médico..." value="@ViewContext.HttpContext.Request.Query["buscaMedico"]">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold text-muted text-uppercase mb-1">Filtrar por Data</label>
+                    <input type="date" name="buscaData" class="form-control form-control-sm" value="@ViewContext.HttpContext.Request.Query["buscaData"]">
+                </div>
+                <div class="col-md-5">
+                    <div class="d-flex gap-2 mt-2 mt-md-0">
+                        <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill fw-bold">
+                            <i class="bi bi-filter me-1"></i>APLICAR FILTRO
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm w-100 rounded-pill">
+                            <i class="bi bi-arrow-clockwise me-1"></i>LIMPAR
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light border-bottom">
-                        <tr>
-                            <th class="ps-4 py-3 text-secondary small fw-bold text-uppercase">Horário</th>
-                            <th class="text-secondary small fw-bold text-uppercase">Paciente</th>
-                            <th class="text-secondary small fw-bold text-uppercase">Equipa Médica</th>
-                            <th class="text-secondary small fw-bold text-uppercase">Notas</th>
-                            <th class="text-center text-secondary small fw-bold text-uppercase">Estado</th>
-                            <th class="text-center text-secondary small fw-bold text-uppercase">Gestão</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.OrderByDescending(x => x.DataHora))
-                        {
-                            <tr class="@(item.Estado == "Faltou" ? "table-light opacity-75" : "")">
-                                <td class="ps-4">
-                                    <div class="fw-bold text-dark">@item.DataHora.ToString("dd/MM/yyyy")</div>
-                                    <span class="badge bg-white text-primary border border-primary-subtle px-2 shadow-sm">
-                                        <i class="bi bi-clock me-1"></i> @item.DataHora.ToString("HH:mm")
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-primary mb-0">@item.Paciente?.Nome</div>
-                                    <small class="text-muted" style="font-size: 0.75rem;">ID: #@item.PacienteId</small>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-info-subtle rounded-circle p-2 me-2 text-info d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
-                                            <i class="bi bi-person-badge-fill"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold text-dark mb-0">@item.Medico?.Nome</div>
-                                            <div class="text-info fw-semibold text-uppercase" style="font-size: 0.65rem;">@item.Medico?.Especialidade?.Nome</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="text-muted small text-truncate" style="max-width: 150px;" title="@item.Observacoes">
-                                        @(string.IsNullOrEmpty(item.Observacoes) ? "—" : item.Observacoes)
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    @if (item.Estado == "Realizada")
-                                    {
-                                        <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3 py-2">
-                                            <i class="bi bi-check-circle-fill me-1"></i> Concluída
-                                        </span>
-                                    }
-                                    else if (item.Estado == "Faltou")
-                                    {
-                                        <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger px-3 py-2">
-                                            <i class="bi bi-x-circle-fill me-1"></i> Faltou
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge rounded-pill bg-warning-subtle text-warning border border-warning px-3 py-2">
-                                            <i class="bi bi-hourglass-split me-1"></i> Pendente
-                                        </span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    @if (item.Estado == "Confirmada")
-                                    {
-                                        <div class="btn-group shadow-sm border rounded">
-                                            <form asp-action="Concluir" asp-route-id="@item.MarcacaoId" method="post">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-white text-success fw-bold border-end px-3" title="Concluir">
-                                                    <i class="bi bi-check-lg"></i>
-                                                </button>
-                                            </form>
-                                            <form asp-action="MarcarFalta" asp-route-id="@item.MarcacaoId" method="post">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-white text-danger fw-bold px-3" title="Marcar Falta">
-                                                    <i class="bi bi-person-x"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted small fst-italic"><i class="bi bi-archive-fill me-1"></i>Finalizada</span>
-                                    }
-                                </td>
+            @if (Model == null || !Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-search text-muted opacity-25" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">Nenhuma consulta encontrada com os filtros aplicados.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light border-bottom">
+                            <tr>
+                                <th class="ps-4 py-3 text-secondary small fw-bold text-uppercase">Horário</th>
+                                <th class="text-secondary small fw-bold text-uppercase">Paciente</th>
+                                <th class="text-secondary small fw-bold text-uppercase">Equipa Médica</th>
+                                <th class="text-secondary small fw-bold text-uppercase">Notas</th>
+                                <th class="text-center text-secondary small fw-bold text-uppercase">Estado</th>
+                                <th class="text-center text-secondary small fw-bold text-uppercase">Gestão</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr class="@(item.Estado == "Faltou" ? "table-light opacity-75" : "")">
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-dark">@item.DataHora.ToString("dd/MM/yyyy")</div>
+                                        <span class="badge bg-white text-primary border border-primary-subtle px-2 shadow-sm">
+                                            <i class="bi bi-clock me-1"></i> @item.DataHora.ToString("HH:mm")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-primary mb-0">@item.Paciente?.Nome</div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">ID: #@item.PacienteId</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-info-subtle rounded-circle p-2 me-2 text-info d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                                <i class="bi bi-person-badge-fill"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold text-dark mb-0">@item.Medico?.Nome</div>
+                                                <div class="text-info fw-semibold text-uppercase" style="font-size: 0.65rem;">@item.Medico?.Especialidade?.Nome</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-muted small text-truncate" style="max-width: 150px;" title="@item.Observacoes">
+                                            @(string.IsNullOrEmpty(item.Observacoes) ? "—" : item.Observacoes)
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Estado == "Realizada" || item.Estado == "Concluída")
+                                        {
+                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3 py-2">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Concluída
+                                            </span>
+                                        }
+                                        else if (item.Estado == "Faltou")
+                                        {
+                                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger px-3 py-2">
+                                                <i class="bi bi-x-circle-fill me-1"></i> Faltou
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-warning-subtle text-warning border border-warning px-3 py-2">
+                                                <i class="bi bi-hourglass-split me-1"></i> Pendente
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Estado == "Confirmada" || item.Estado == "Pendente")
+                                        {
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <form asp-action="Concluir" asp-route-id="@item.MarcacaoId" method="post" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-success shadow-sm" title="Concluir">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form asp-action="MarcarFalta" asp-route-id="@item.MarcacaoId" method="post" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" title="Marcar Falta">
+                                                        <i class="bi bi-person-x"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small fst-italic"><i class="bi bi-archive-fill me-1"></i>Finalizada</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
+    </div>
+
+    @* CONTROLOS DE PAGINAÇÃO - AJUSTADO PARA NÃO QUEBRAR *@
+    <div class="d-flex justify-content-center mt-4">
+        @Html.PagedListPager(Model, pagina => Url.Action("Index", new { 
+            pagina, 
+            buscaMedico = ViewContext.HttpContext.Request.Query["buscaMedico"], 
+            buscaData = ViewContext.HttpContext.Request.Query["buscaData"] 
+        }), new PagedListRenderOptions {
+            LiElementClasses = new string[] { "page-item" },
+            PageClasses = new string[] { "page-link" },
+            UlElementClasses = new string[] { "pagination pagination-sm shadow-sm" },
+            DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+            DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+            MaximumPageNumbersToDisplay = 5
+        })
     </div>
 </div>
 
 <style>
     .table-hover tbody tr:hover { background-color: #f8faff !important; transition: 0.2s; }
-    .btn-white { background: white; border: none; }
-    .btn-white:hover { background: #f8f9fa; }
+    .input-group-text { border-radius: 8px 0 0 8px; }
+    .form-control { border-radius: 8px; }
+    .pagination { margin-bottom: 0; }
+    .page-item.active .page-link { background-color: #0d6efd !important; border-color: #0d6efd !important; color: white !important; }
+    .page-link { color: #0d6efd; border-radius: 5px; margin: 0 2px; }
 </style>

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "jc2C0Ubtf+w=",
+  "dgSpecHash": "twBdxbo9kWw=",
   "success": true,
   "projectFilePath": "C:\\Users\\Carolina Silva\\Documents\\PI1\\MediPlusApp\\MediPlusApp\\MediPlusApp.csproj",
   "expectedPackageFiles": [
@@ -30,7 +30,9 @@
     "C:\\Users\\Carolina Silva\\.nuget\\packages\\system.composition.convention\\9.0.0\\system.composition.convention.9.0.0.nupkg.sha512",
     "C:\\Users\\Carolina Silva\\.nuget\\packages\\system.composition.hosting\\9.0.0\\system.composition.hosting.9.0.0.nupkg.sha512",
     "C:\\Users\\Carolina Silva\\.nuget\\packages\\system.composition.runtime\\9.0.0\\system.composition.runtime.9.0.0.nupkg.sha512",
-    "C:\\Users\\Carolina Silva\\.nuget\\packages\\system.composition.typedparts\\9.0.0\\system.composition.typedparts.9.0.0.nupkg.sha512"
+    "C:\\Users\\Carolina Silva\\.nuget\\packages\\system.composition.typedparts\\9.0.0\\system.composition.typedparts.9.0.0.nupkg.sha512",
+    "C:\\Users\\Carolina Silva\\.nuget\\packages\\x.pagedlist\\10.5.9\\x.pagedlist.10.5.9.nupkg.sha512",
+    "C:\\Users\\Carolina Silva\\.nuget\\packages\\x.pagedlist.mvc.core\\10.5.9\\x.pagedlist.mvc.core.10.5.9.nupkg.sha512"
   ],
   "logs": []
 }
